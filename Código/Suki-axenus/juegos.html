@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Videojuegos — Suki & Axenus</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background-color: #0f172a; /* Azul oscuro profundo */
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: #e2e8f0;
+      padding: 50px 20px;
+      line-height: 1.5;
+    }
+
+    .contenedor-principal {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    h1 span { color: #38bdf8; } /* Detalle cian */
+
+    .subtitulo {
+      color: #94a3b8;
+      font-size: 1.1rem;
+    }
+
+    /* Grid del catálogo */
+    .catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+      margin-bottom: 50px;
+    }
+
+    /* Tarjeta de juego */
+    .tarjeta {
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .tarjeta:hover {
+      transform: translateY(-8px);
+      border-color: #38bdf8;
+      box-shadow: 0 15px 30px rgba(56, 189, 248, 0.15);
+    }
+
+    .tarjeta img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-bottom: 1px solid #334155;
+      background: #0f172a;
+    }
+
+    .tarjeta .info {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .tarjeta h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .metacritic {
+      display: inline-block;
+      font-size: 0.85rem;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      width: fit-content;
+    }
+
+    .precio {
+      font-size: 1.1rem;
+      color: #94a3b8;
+      margin-bottom: 20px;
+      margin-top: auto; /* Empuja el botón hacia abajo */
+    }
+
+    .precio strong {
+      color: #fff;
+      font-size: 1.3rem;
+    }
+
+    .tarjeta button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #8b5cf6; /* Morado premium */
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .tarjeta button:hover {
+      background: #38bdf8; /* Cambia a cian */
+      color: #0f172a;
+      transform: scale(1.02);
+    }
+
+    /* Botón volver */
+    .volver {
+      display: block;
+      width: fit-content;
+      margin: 0 auto;
+      padding: 14px 36px;
+      border-radius: 10px;
+      background: #1e293b;
+      color: #38bdf8;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid #334155;
+      transition: all 0.2s;
+    }
+
+    .volver:hover {
+      background: #334155;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="contenedor-principal">
+    <header>
+      <h1>Catálogo <span>Gamer</span></h1>
+      <p class="subtitulo">Los mejores títulos disponibles para renta hoy</p>
+    </header>
+
+    <!-- Aquí se inyectan los juegos -->
+    <div id="catalogo" class="catalogo">
+      <p style="text-align:center; width:100%;">Cargando catálogo...</p>
+    </div>
+
+    <a href="menu.html" class="volver">← Volver al menú principal</a>
+  </div>
+
+  <script>
+    // API de CheapShark (Gratis, sin key)
+    const API_URL = 'https://www.cheapshark.com/api/1.0/deals?storeID=1&pageSize=8&sortBy=Metacritic';
+    const PRECIO_DIA = 50;
+    const catalogo = document.getElementById('catalogo');
+
+    // Respaldo por si la API falla
+    const JUEGOS_RESPALDO = [
+      { title: 'The Witcher 3', metacriticScore: '93' },
+      { title: 'Portal 2', metacriticScore: '95' },
+      { title: 'Half-Life 2', metacriticScore: '96' },
+      { title: 'Hades', metacriticScore: '93' },
+      { title: 'Celeste', metacriticScore: '92' },
+      { title: 'Stardew Valley', metacriticScore: '89' },
+      { title: 'Doom Eternal', metacriticScore: '87' },
+      { title: 'Hollow Knight', metacriticScore: '87' }
+    ];
+
+    function crearTarjeta(juego) {
+      const card = document.createElement('div');
+      card.className = 'tarjeta';
+
+      // Imagen (Steam CDN o la de la API)
+      const imagenURL = juego.steamAppID
+        ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${juego.steamAppID}/header.jpg`
+        : juego.thumb;
+
+      const img = document.createElement('img');
+      img.alt = juego.title;
+      img.src = imagenURL || '';
+      img.onerror = () => { if (juego.thumb && img.src !== juego.thumb) img.src = juego.thumb; };
+      card.appendChild(img);
+
+      const info = document.createElement('div');
+      info.className = 'info';
+
+      const h3 = document.createElement('h3');
+      h3.textContent = juego.title || 'Sin título';
+
+      const score = document.createElement('span');
+      score.className = 'metacritic';
+      score.textContent = `Metacritic: ${juego.metacriticScore || 'N/D'} ⭐`;
+
+      const precio = document.createElement('p');
+      precio.className = 'precio';
+      precio.innerHTML = `Renta: <strong>$${PRECIO_DIA} MXN / día</strong>`;
+
+      const btn = document.createElement('button');
+      btn.textContent = 'Rentar ahora';
+      btn.onclick = () => alert(`Agregaste "${juego.title}" a tu solicitud.`);
+
+      info.append(h3, score, precio, btn);
+      card.appendChild(info);
+
+      return card;
+    }
+
+    function pintarCatalogo(juegos) {
+      catalogo.innerHTML = '';
+      juegos.forEach(j => catalogo.appendChild(crearTarjeta(j)));
+    }
+
+    async function cargarCatalogo() {
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 8000);
+        const res = await fetch(API_URL, { signal: ctrl.signal });
+        clearTimeout(timer);
+        
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const juegos = await res.json();
+        if (!Array.isArray(juegos) || !juegos.length) throw new Error('Sin datos');
+        pintarCatalogo(juegos);
+      } catch (err) {
+        console.warn('API falló, usando respaldo:', err);
+        pintarCatalogo(JUEGOS_RESPALDO);
+      }
+    }
+
+    cargarCatalogo();
+  </script>
+</body>
+</html>
