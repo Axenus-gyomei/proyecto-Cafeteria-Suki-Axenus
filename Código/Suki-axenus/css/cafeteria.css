@@ -1,0 +1,16 @@
+.foto-cafe {
+  background: #fff;
+  border: 3px dashed #ffb8cc;
+  border-radius: 25px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 20px rgba(255, 125, 163, 0.15);
+  text-align: center;
+}
+
+.foto-cafe img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  display: block;
+}
