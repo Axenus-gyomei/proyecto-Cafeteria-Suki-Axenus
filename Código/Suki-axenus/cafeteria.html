@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cafetería — Suki & Axenus</title>
+  
+  <!-- Fuentes elegantes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background-color: #f9f6f0; /* Crema suave */
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: #3a2d28; /* Café oscuro para texto */
+      padding: 40px 20px;
+      line-height: 1.6;
+      display: flex;
+      justify-content: center;
+    }
+
+    .contenedor-principal {
+      width: 100%;
+      max-width: 850px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      color: #3a2d28;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitulo {
+      font-size: 1.05rem;
+      color: #7a6b63;
+      font-weight: 400;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: #3a2d28;
+      margin-bottom: 20px;
+      text-align: center;
+      border-bottom: 2px solid #e8dcd1;
+      padding-bottom: 10px;
+    }
+
+    /* Imagen de café principal */
+    .foto-cafe {
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 30px rgba(58, 45, 40, 0.08);
+    }
+
+    .foto-cafe img {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Catálogo de productos */
+    .catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .item-menu {
+      background: #fff;
+      border: 1px solid #e8dcd1;
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: left;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      position: relative;
+    }
+
+    .item-menu:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(58, 45, 40, 0.08);
+      border-color: #d4b49d;
+    }
+
+    .item-menu h3 {
+      font-size: 1.15rem;
+      color: #3a2d28;
+      margin-bottom: 6px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .item-menu p {
+      font-size: 0.85rem;
+      color: #8c7a70;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+
+    .precio {
+      display: inline-block;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #b46f46; /* Terracota / café cálido */
+    }
+
+    /* Formulario de pedido */
+    .caja-pedido {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(58, 45, 40, 0.06);
+      margin-bottom: 40px;
+    }
+
+    .inputs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .inputs input, .inputs select {
+      flex: 1;
+      min-width: 180px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      border: 1px solid #dcd1c8;
+      background: #faf8f6;
+      color: #3a2d28;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .inputs input:focus, .inputs select:focus {
+      border-color: #b46f46;
+      box-shadow: 0 0 0 3px rgba(180, 111, 70, 0.1);
+    }
+
+    .inputs button {
+      padding: 14px 30px;
+      border: none;
+      border-radius: 10px;
+      background: #3a2d28;
+      color: #fff;
+      font-weight: 500;
+      font-size: 1rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .inputs button:hover {
+      background: #b46f46;
+      transform: translateY(-2px);
+    }
+
+    .aviso {
+      font-size: 0.8rem;
+      color: #a0938b;
+      margin-top: 18px;
+      text-align: center;
+    }
+
+    /* Lista de pedidos */
+    .pedidos-contenedor {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(58, 45, 40, 0.06);
+      margin-bottom: 40px;
+    }
+
+    #listaPedidos {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #listaPedidos li {
+      background: #faf8f6;
+      border: 1px solid #e8dcd1;
+      padding: 15px 20px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      font-size: 0.95rem;
+    }
+
+    .estado {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 4px 12px;
+      border-radius: 6px;
+      background: #f0e5d8;
+      color: #8c6a4f;
+      margin-left: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .estado.listo {
+      background: #d1ebd9;
+      color: #34794b;
+    }
+
+    #listaPedidos button {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      cursor: pointer;
+      color: #fff;
+      font-weight: 500;
+      font-family: inherit;
+      font-size: 0.85rem;
+      margin-left: 8px;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    #listaPedidos button:hover { opacity: 0.9; transform: scale(1.02); }
+
+    .btn-listo { background: #5c8a71; }
+    .btn-borrar { background: #b85c5c; }
+
+    /* Botón volver */
+    .volver {
+      display: block;
+      width: fit-content;
+      margin: 0 auto;
+      padding: 14px 36px;
+      border-radius: 10px;
+      background: #fff;
+      color: #3a2d28;
+      font-weight: 500;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid #e8dcd1;
+      transition: all 0.2s;
+    }
+
+    .volver:hover {
+      background: #3a2d28;
+      color: #fff;
+      border-color: #3a2d28;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="contenedor-principal">
+    <header>
+      <h1>Nuestro Menú</h1>
+      <p class="subtitulo">Descubre tu bebida o postre favorito</p>
+    </header>
+
+    <div class="foto-cafe">
+      <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=800&q=80" alt="Café de especialidad">
+    </div>
+
+    <div id="catalogo" class="catalogo"></div>
+
+    <div class="caja-pedido">
+      <h2>Haz tu pedido</h2>
+      <div class="inputs">
+        <input id="inputCliente" type="text" placeholder="Tu nombre">
+        <select id="selectBebida"></select>
+        <button id="btnPedir" type="button">Pedir</button>
+      </div>
+      <p class="aviso">Los pedidos se guardan localmente en tu navegador.</p>
+    </div>
+
+    <div class="pedidos-contenedor">
+      <h2>Pedidos en curso</h2>
+      <ul id="listaPedidos"></ul>
+    </div>
+
+    <a href="menu.html" class="volver">← Volver al menú principal</a>
+  </div>
+
+  <script>
+    const MENU_CAFE = [
+      { id: 1,  nombre: 'Espresso',           precio: 35, cat: 'Café caliente', ico: '☕' },
+      { id: 2,  nombre: 'Americano',          precio: 40, cat: 'Café caliente', ico: '☕' },
+      { id: 3,  nombre: 'Latte',              precio: 55, cat: 'Café caliente', ico: '🥛' },
+      { id: 4,  nombre: 'Cappuccino',         precio: 55, cat: 'Café caliente', ico: '☕' },
+      { id: 5,  nombre: 'Mocha',              precio: 60, cat: 'Café caliente', ico: '🍫' },
+      { id: 6,  nombre: 'Té chai',            precio: 50, cat: 'Té',            ico: '🍵' },
+      { id: 7,  nombre: 'Frappé de café',     precio: 70, cat: 'Frío',          ico: '🧋' },
+      { id: 8,  nombre: 'Café helado',        precio: 55, cat: 'Frío',          ico: '🧊' },
+      { id: 9,  nombre: 'Chocolate caliente', precio: 50, cat: 'Chocolate',     ico: '🍫' },
+      { id: 10, nombre: 'Pan dulce',          precio: 25, cat: 'Comida',        ico: '🥐' },
+      { id: 11, nombre: 'Galleta',            precio: 20, cat: 'Comida',        ico: '🍪' },
+      { id: 12, nombre: 'Sándwich',           precio: 65, cat: 'Comida',        ico: '🥪' }
+    ];
+
+    const STORAGE_KEY = 'pedidos_cafeteria';
+    const contenedorMenu = document.getElementById('catalogo');
+    const selectBebida   = document.getElementById('selectBebida');
+    const inputCliente   = document.getElementById('inputCliente');
+    const btnPedir       = document.getElementById('btnPedir');
+    const listaPedidos   = document.getElementById('listaPedidos');
+
+    function pintarMenu() {
+      contenedorMenu.innerHTML = '';
+      selectBebida.innerHTML = '';
+
+      MENU_CAFE.forEach(p => {
+        const op = document.createElement('option');
+        op.value = p.nombre;
+        op.textContent = `${p.nombre} — $${p.precio}`;
+        selectBebida.appendChild(op);
+
+        const card = document.createElement('div');
+        card.className = 'item-menu';
+        card.innerHTML = `
+          <h3>${p.ico} ${p.nombre}</h3>
+          <p>${p.cat}</p>
+          <span class="precio">$${p.precio} MXN</span>
+        `;
+        contenedorMenu.appendChild(card);
+      });
+    }
+
+    function leerPedidos() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function guardarPedidos(p) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+    }
+
+    function pintarPedidos() {
+      const pedidos = leerPedidos();
+      listaPedidos.innerHTML = '';
+
+      if (pedidos.length === 0) {
+        listaPedidos.innerHTML = '<li style="justify-content:center; border:none; background:none; color:#8c7a70;">No hay pedidos pendientes.</li>';
+        return;
+      }
+
+      pedidos.forEach((p, i) => {
+        const li = document.createElement('li');
+        
+        const texto = document.createElement('span');
+        texto.innerHTML = `<strong>${p.cliente}</strong> pidió: ${p.bebida} `;
+        
+        const estado = document.createElement('span');
+        estado.className = 'estado' + (p.estado === 'Listo' ? ' listo' : '');
+        estado.textContent = p.estado;
+        texto.appendChild(estado);
+
+        const acciones = document.createElement('span');
+
+        if (p.estado !== 'Listo') {
+          const btnListo = document.createElement('button');
+          btnListo.className = 'btn-listo';
+          btnListo.textContent = 'Listo';
+          btnListo.onclick = () => {
+            const todos = leerPedidos();
+            todos[i].estado = 'Listo';
+            guardarPedidos(todos);
+            pintarPedidos();
+          };
+          acciones.appendChild(btnListo);
+        }
+
+        const btnBorrar = document.createElement('button');
+        btnBorrar.className = 'btn-borrar';
+        btnBorrar.textContent = 'Borrar';
+        btnBorrar.onclick = () => {
+          const todos = leerPedidos();
+          todos.splice(i, 1);
+          guardarPedidos(todos);
+          pintarPedidos();
+        };
+        acciones.appendChild(btnBorrar);
+
+        li.append(texto, acciones);
+        listaPedidos.appendChild(li);
+      });
+    }
+
+    btnPedir.addEventListener('click', () => {
+      const cliente = inputCliente.value.trim();
+      if (!cliente) return alert('Por favor, escribe tu nombre.');
+
+      const pedidos = leerPedidos();
+      pedidos.unshift({
+        cliente,
+        bebida: selectBebida.value,
+        estado: 'En preparación'
+      });
+
+      guardarPedidos(pedidos);
+      inputCliente.value = '';
+      pintarPedidos();
+    });
+
+    pintarMenu();
+    pintarPedidos();
+  </script>
+</body>
+</html>
